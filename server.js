@@ -1,17 +1,43 @@
+'use strict';
+
 const express = require('express') // require the express package
-const app = express() // initialize your express app instance
+const app = express() 
 const cors = require('cors');
 
 app.use(cors())
-require('dotenv').config();
-const axios = require('axios'); // require the package
-
-// inside your callback function
-axios.get(url).then(response => response.data).catch(error => console.log(error));
-// a server endpoint 
-app.get('/', // our endpoint name
- function (req, res) { // callback function of what we should do with our request
-  res.send('Hello World') // our endpoint function response
-})
+ const weather = require('./data/weather.json')
  
-app.listen(3001) // kick start the express server to work
+app.get('/', 
+ function (req, res) { 
+  res.send('Hello World') 
+})
+app.get('/weather', 
+ function (req, res) { 
+  console.log(req.query.city_name);
+  const type=req.query.city_name;
+
+// const arrayofwether=weather.data[0]
+console.log(type);
+  if(type){
+
+    const returnArray=weather[0].data.filter((item)=>{
+      return item[0] === type;
+    });
+    if(returnArray.length){
+      res.json(weather)
+    }else{
+      res.send('no data fond')
+    }
+  }else{
+    res.json(weather) 
+  }
+  })
+  
+
+
+  
+  
+ 
+app.listen(3001, () => {
+  console.log(`Server started on port`);
+});
