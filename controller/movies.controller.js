@@ -4,10 +4,10 @@ const axios = require('axios');
 require('dotenv').config();
 const MOVIES_API_KEY = process.env.MOVIES_API_KEY;
 
-  const Movie= app.get("/movies", async (request, response) => {
+  const Movie=  async (request, response) => {
     
     const city_name = request.query.query;
-  
+  console.log(city_name);
     const movie = "https://api.themoviedb.org/3/search/movie";
     const movieResponse = await axios.get(
       `${movie}?query=${city_name}&api_key=${MOVIES_API_KEY}`
@@ -17,8 +17,7 @@ const MOVIES_API_KEY = process.env.MOVIES_API_KEY;
     if (city_name) {
      
       let arr1 = movieResponse.data.results.map((data1) => {
-        console.log(data1);
-        return new Moovies(
+        return new Movie(
           `Title: ${data1.title}`,
           `Overview: ${data1.overview}`,
           `Average votes: ${data1.vote_average}`,
@@ -35,50 +34,12 @@ const MOVIES_API_KEY = process.env.MOVIES_API_KEY;
       } else {
         response.send("error: Something went wrong.");
       }
-    } else {
-      response.json("error: Something went wrong.");
-    }
-  });
-  app.listen(PORT, () => {
-    console.log(`Server started on port`);
-  });
+    } 
+  };
+ 
+ 
 
 
-  app.get("/movies", async (request, response) => {
-    
-    const city_name = request.query.query;
   
-   
-    const movie = "https://api.themoviedb.org/3/search/movie";
-    const movieResponse = await axios.get(
-      `${movie}?query=${city_name}&api_key=${MOVIES_API_KEY}`
-    );
-  
-   
-    if (city_name) {
-    
-      let arr1 = movieResponse.data.results.map((data) => {
-        console.log(data);
-        return new Movie(
-          `Title: ${data.title}`,
-          `Overview: ${data.overview}`,
-          `Average votes: ${data.vote_average}`,
-          ` Total Votes: ${data.vote_count}`,
-          `${data.poster_path}`,
-          `popularity:${data.popularity}`,
-          `release_date:${data.release_date}`
-  
-        );
-      });
-  
-      if (arr1.length) {
-        response.json(arr1);
-      } else {
-        response.send("error: Something went wrong.");
-      }
-    } else {
-      response.json("error: Something went wrong.");
-    }
-  });
 
   module.exports = Movie;
