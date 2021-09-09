@@ -1,7 +1,8 @@
 'use strict';
 
 
-const index= app.get('/',
+const index= 
   function (req, res) {
     res.send('Hello World')
-  })
+  };
+  module.exports = index;
