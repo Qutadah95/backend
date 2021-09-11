@@ -13,7 +13,7 @@ const Movie = require('../models/movies.model');
     const movieurl = "https://api.themoviedb.org/3/search/movie";
     console.log(movieurl);
     const movieResponse = await axios.get(
-      `${movieurl}?query=amman&api_key=${MOVIES_API_KEY}`
+      `${movieurl}?query=${city_name}&api_key=${MOVIES_API_KEY}`
     );
     console.log(movieResponse.data.results[0].title);
 
@@ -23,13 +23,7 @@ const Movie = require('../models/movies.model');
      
       let arr1 = movieResponse.data.results.map((data1) => {
         return new Movie(
-          // data1.title,
-          // data1.overview,
-          // data1.vote_average,
-          // data1.vote_count,
-          // data1.poster_path,
-          // data1.popularity,
-          // data1.release_date,
+    
           `Title: ${data1.title}`,
           `Overview: ${data1.overview}`,
           `Average votes: ${data1.vote_average}`,
