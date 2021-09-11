@@ -4,13 +4,27 @@ const axios = require('axios');
 require('dotenv').config();
 const MOVIES_API_KEY = process.env.MOVIES_API_KEY;
 const Movie = require('../models/movies.model');
+const Cache = require('../helper/cache.helper');
+let cacheObject= new Cache();
 
 
   const getMovie=  async (request, response) => {
     
     const city_name = request.query.query;
   // console.log(city_name);
-    const movieurl = "https://api.themoviedb.org/3/search/movie";
+  const dayInMilSec=86400000;
+const oneDayPassed=(Date.now()-cacheObject.timeStamp) > dayInMilSec;
+if(oneDayPassed){
+
+  cacheObject=new Cache();
+}
+
+const FoundData=cacheObject.Forecast.find(cityName=>cityName.city_name)
+if(FoundData){
+
+  res.json(FoundData.data)
+}else{
+  const movieurl = "https://api.themoviedb.org/3/search/movie";
     console.log(movieurl);
     const movieResponse = await axios.get(
       `${movieurl}?query=${city_name}&api_key=${MOVIES_API_KEY}`
@@ -45,6 +59,8 @@ const Movie = require('../models/movies.model');
      
   };
  
+}
+    
  
 
 
