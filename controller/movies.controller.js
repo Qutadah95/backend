@@ -3,21 +3,41 @@
 const axios = require('axios');
 require('dotenv').config();
 const MOVIES_API_KEY = process.env.MOVIES_API_KEY;
+const Movie = require('../models/movies.model');
+const Cache = require('../helper/cache.helper');
+let cacheObject= new Cache();
 
-  const Movie=  async (request, response) => {
+
+  const getMovie=  async (request, response) => {
     
     const city_name = request.query.query;
-  console.log(city_name);
-    const movie = "https://api.themoviedb.org/3/search/movie";
+  // console.log(city_name);
+  const dayInMilSec=86400000;
+const oneDayPassed=(Date.now()-cacheObject.timeStamp) > dayInMilSec;
+if(oneDayPassed){
+
+  cacheObject=new Cache();
+}
+
+const FoundData=cacheObject.Forecast.find(cityName=>cityName.city_name)
+if(FoundData){
+
+  res.json(FoundData.data)
+}else{
+  const movieurl = "https://api.themoviedb.org/3/search/movie";
+    console.log(movieurl);
     const movieResponse = await axios.get(
-      `${movie}?query=${city_name}&api_key=${MOVIES_API_KEY}`
+      `${movieurl}?query=${city_name}&api_key=${MOVIES_API_KEY}`
     );
+    console.log(movieResponse.data.results[0].title);
+
   
     
-    if (city_name) {
+    
      
       let arr1 = movieResponse.data.results.map((data1) => {
         return new Movie(
+    
           `Title: ${data1.title}`,
           `Overview: ${data1.overview}`,
           `Average votes: ${data1.vote_average}`,
@@ -27,19 +47,23 @@ const MOVIES_API_KEY = process.env.MOVIES_API_KEY;
           `release_date:${data1.release_date}`
   
         );
-      });
-  
+      });    
+
+      console.log(arr1,'data');
       if (arr1.length) {
         response.json(arr1);
+        
       } else {
         response.send("error: Something went wrong.");
       }
-    } 
+     
   };
  
+}
+    
  
 
 
   
 
-  module.exports = Movie;
+  module.exports = getMovie;
